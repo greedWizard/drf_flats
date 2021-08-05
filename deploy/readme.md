@@ -19,7 +19,7 @@ docker-compose build && docker-compose up
 ```
 docker ps # узнать id контейнера
 
-docker exec -it <id контейнера> addstate 
+docker exec -it <id контейнера> python manage.py addstate 
 ```
 
 Добавить город
@@ -27,7 +27,7 @@ docker exec -it <id контейнера> addstate
 ```
 docker ps # узнать id контейнера
 
-docker exec -it <id контейнера> addcity 
+docker exec -it <id контейнера> python manage.py  addcity 
 ```
 
 Миграции
