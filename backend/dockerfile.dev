@@ -1,0 +1,19 @@
+FROM python:3.9-slim-buster
+
+WORKDIR /app
+
+ENV req=requirements-dev.txt
+
+ENV PYTHONUNBUFFERED=1
+
+ENV DJANGO_SETTINGS_MODULE=project.settings.dev
+
+ADD ${req} ${req}
+
+RUN pip3 install -r ${req}
+
+EXPOSE 8000
+
+ADD src/ .
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
