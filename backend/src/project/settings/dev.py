@@ -29,7 +29,6 @@ ALLOWED_HOSTS = [
     '*'
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,16 +39,24 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # made apps
     'rest_framework',
     'base',
     'flats',
     'regions',
+    'users',
+
+    # third party
     'drf_spectacular',
+    'rest_framework_simplejwt',
 ]
 
 REST_FRAMEWORK = {
     # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
 
 

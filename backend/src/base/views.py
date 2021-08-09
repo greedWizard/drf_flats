@@ -6,6 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .services import IService
 
@@ -64,6 +65,7 @@ class ServiceViewSetAction(ServiceViewSetBase):
             return Response(
                 read_sr.data
             )
+
     @extend_schema(
         operation_id='create',
     )
@@ -78,6 +80,7 @@ class ServiceViewSetAction(ServiceViewSetBase):
             return Response(
                 read_sr.data
             )
+
     @extend_schema(
         operation_id='delete',
     )
@@ -112,4 +115,4 @@ class ServiceViewSet(ServiceViewSetRead, ServiceViewSetAction):
         Вьюсеты для работы с сервисами. Все вьюхи должны быть реализованы через наследников
         данного класса, чтобы не протеворечить SOLID.
     '''
-    pass
+    permission_classes = (IsAuthenticatedOrReadOnly, )

@@ -20,15 +20,15 @@ class FlatPostSerializer(FlatBaseSerializer):
         ]
 
 
-class FlatNestedSerizlier(FlatBaseSerializer):
+class FlatNestedSerializer(FlatBaseSerializer):
     class Meta(FlatBaseSerializer.Meta):
         pass
 
 
-class FlatReadSerializer(FlatNestedSerizlier):
+class FlatReadSerializer(FlatNestedSerializer):
     city = CityReadSerializer()
 
-    class Meta(FlatNestedSerizlier.Meta):
-        fields = FlatNestedSerizlier.Meta.fields + [
+    class Meta(FlatNestedSerializer.Meta):
+        fields = FlatNestedSerializer.Meta.fields + [
             'id', 'city'
         ]
