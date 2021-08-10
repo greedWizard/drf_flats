@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from rest_framework.response import Response
 from flats.serializers import FlatPostSerializer, FlatReadSerializer
@@ -27,4 +28,25 @@ class FlatViewSet(ServiceViewSet):
 
         return Response(
             serializer.data
+        )
+
+    def create(self, request):
+        self.validate_action(request)
+
+        new_flat = self.service().create(
+            user_id=request.user.id,
+            **request.data,
+        )
+
+        seriazlier = self.read_serializer(new_flat, many=False)
+
+        return Response(
+            seriazlier.data
+        )
+
+    def destroy(self, request, pk):
+        self.service().delete(pk=pk, user_id=request.user.id)
+
+        return Response(
+            {'status': 'success',}
         )

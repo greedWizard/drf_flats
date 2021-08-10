@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Tuple, Type
+from django.core.exceptions import ValidationError
 from django.db.models import Model
 from django.db.models.query import QuerySet
 from django.core.paginator import Paginator
@@ -33,6 +34,12 @@ class IServiceRead(IServiceBase):
     
 
 class IServiceAction(IServiceBase):
+    def validate_delete(self, **data) -> bool:
+        return True
+
+    def validate_update(self, **data) -> bool:
+        return True
+
     def create(self, **data) -> Model:
         ''' Create new object '''
         new_obj = self.model(**data)
@@ -48,7 +55,14 @@ class IServiceAction(IServiceBase):
     
     def delete(self, **filters) -> Tuple[int, Dict[str, int]]:
         ''' Deletes type of objects '''
-        return self.basequeryset.filter(**filters).delete()
+        self.validate_delete(**filters)
+
+        delete_objects = self.basequeryset.filter(**filters).all()
+
+        if len(delete_objects) == 0:
+            raise ValidationError('Nothing to delete!')
+
+        return delete_objects.delete()
 
     def bulk_delete(self, *pks) -> List[Any]:
         ''' Delete multiple objects '''

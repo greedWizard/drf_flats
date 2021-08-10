@@ -20,3 +20,6 @@ class AdressService(IService):
             raise ValidationError('City Not Found')
 
         return super().create(**data)
+
+    def delete(self, **filters):
+        return super().delete(**filters)

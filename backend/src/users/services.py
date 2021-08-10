@@ -35,12 +35,13 @@ class UserService(IService):
                 raise ValidationError('Phone number already registred')
 
             try:
-                new_user = self.model(
+                new_user = self.model.objects.create_user(
                     username=data.get('email'),
                     email=data.get('email'),
                     password=data.get('password'),
                 )
                 new_user.save()
+                print(new_user.password)
             except IntegrityError as e:
                 raise ValidationError(f'User already registred!')
 

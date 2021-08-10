@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import List, Tuple, Type
 from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.serializers import Serializer
@@ -51,14 +51,23 @@ class ServiceViewSetRead(ServiceViewSetBase):
 class ServiceViewSetAction(ServiceViewSetBase):
     action_serializer: Type[Serializer] = None
 
+    def validate_action(
+        self,
+        request: Request,
+        raise_exception=True,
+    ) -> Tuple[Serializer, bool]:
+        ''' проверить поля в серилазиаторе для записи '''
+        action_sr = self.action_serializer(data=request.data)
+        return action_sr, action_sr.is_valid(raise_exception=raise_exception)
+
     @extend_schema(
         operation_id='update',
     )
     def update(self, request: Request, pk=None):
         ''' редактировать конкретный объект '''
-        action_sr = self.action_serializer(data=request.data)
+        action_sr, valid = self.validate_action(request)
 
-        if action_sr.is_valid(True):
+        if valid:
             objects = self.service().update(action_sr.data, pk=pk).first()
             read_sr = self.read_serializer(objects)
 
@@ -71,9 +80,9 @@ class ServiceViewSetAction(ServiceViewSetBase):
     )
     def create(self, request: Request):
         ''' создать новый объект '''
-        action_sr = self.action_serializer(data=request.data)
+        action_sr, valid = self.validate_action(request)
 
-        if action_sr.is_valid(True):
+        if valid:
             new_obj = self.service().create(**action_sr.data)
             read_sr = self.read_serializer(new_obj)
 
@@ -115,4 +124,4 @@ class ServiceViewSet(ServiceViewSetRead, ServiceViewSetAction):
         Вьюсеты для работы с сервисами. Все вьюхи должны быть реализованы через наследников
         данного класса, чтобы не протеворечить SOLID.
     '''
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticated, )

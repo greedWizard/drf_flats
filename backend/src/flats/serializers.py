@@ -16,7 +16,7 @@ class FlatPostSerializer(FlatBaseSerializer):
 
     class Meta(FlatBaseSerializer.Meta):
         fields = FlatBaseSerializer.Meta.fields + [
-            'city_id'
+            'city_id',
         ]
 
 
